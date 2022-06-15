@@ -9,6 +9,7 @@
 class APlayerControllerGameplay;
 class APlayerStateGameplay;
 class UPawnPlayerComponent;
+class UPlayerCameraComponent;
 
 UCLASS()
 class RPGSHOOTER_API ACharacterPlayer : public ACharacterBase
@@ -28,8 +29,10 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere, Transient, Category = "Gameplay|Character")
 		UPawnPlayerComponent* PawnPlayerComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gameplay|Character", Meta = (AllowPrivateAccess = "true"))
+		UPlayerCameraComponent* PlayerCameraComponent;
 
 protected:
 	static FName const NAME_PawnPlayerComponent;
-
+	static FName const NAME_PlayerCameraComponent;
 };

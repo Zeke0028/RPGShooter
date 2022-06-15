@@ -18,6 +18,13 @@ class RPGSHOOTER_API UPawnGameplayComponent : public UPawnComponent
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintPure, Category = "Gameplay|Pawn")
+		static UPawnGameplayComponent* FindPawnGameplayComponent(const AActor* Actor)
+		{
+			return (Actor ? Actor->FindComponentByClass<UPawnGameplayComponent>() : nullptr);
+		}
+
+public:
 	UPawnGameplayComponent();
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -38,12 +45,6 @@ protected:
 		void OnRep_PawnData();
 
 public:
-	UFUNCTION(BlueprintPure, Category = "Gameplay|Pawn")
-		static UPawnGameplayComponent* FindPawnGameplayComponent(const AActor* Actor) { return (Actor ? Actor->FindComponentByClass<UPawnGameplayComponent>() : nullptr); }
-
-	UFUNCTION(BlueprintPure, Category = "Gameplay|Pawn")
-		UAbilitySystemCharacterComponent* GetAbilitySystemCharacterComponent() const { return AbilitySystemComponent; }
-
 	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "Gameplay|Pawn", Meta = (ExpandBoolAsExecs = "ReturnValue"))
 		bool IsPawnReadyToInitialize() const { return bPawnReady; }
 
@@ -54,6 +55,9 @@ public:
 	{
 		return Cast<T>(PawnData);
 	}
+
+	UFUNCTION(BlueprintPure, Category = "Gameplay|Pawn")
+		UAbilitySystemCharacterComponent* GetAbilitySystemCharacterComponent() const { return AbilitySystemComponent; }
 
 public:
 	void OnPawnReadyToInitialize_RegisterAndCall(FSimpleMulticastDelegate::FDelegate Delegate);

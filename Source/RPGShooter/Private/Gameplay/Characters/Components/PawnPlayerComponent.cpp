@@ -12,6 +12,8 @@
 #include "Data/PawnData.h"
 #include "NativeGameplayTags.h"
 #include "Input/PlayerInputComponent.h"
+#include "Camera/PlayerCameraComponent.h"
+#include "Camera/CameraMode/CameraModeThirdPerson.h"
 
 UE_DEFINE_GAMEPLAY_TAG(TAG_Input_Move, "InputTag.Move");
 UE_DEFINE_GAMEPLAY_TAG(TAG_Input_Look, "InputTag.Look");
@@ -20,6 +22,8 @@ UPawnPlayerComponent::UPawnPlayerComponent()
 {
 	bPawnHasInitialized = false;
 	bReadyToBindInputs = false;
+
+	DefaultCameraMode = UCameraModeThirdPerson::StaticClass();
 }
 
 bool UPawnPlayerComponent::IsPawnComponentReadyToInitialize() const
@@ -103,6 +107,14 @@ void UPawnPlayerComponent::OnPawnReadyToInitialize()
 		}
 	}
 
+	const bool bIsLocallyControlled = Pawn->IsLocallyControlled();
+	if (bIsLocallyControlled)
+	{
+		if (UPlayerCameraComponent* CameraComponent = UPlayerCameraComponent::FindPlayerCameraComponent(Pawn))
+		{
+			CameraComponent->DetermineCameraModeDelegate.BindUObject(this, &ThisClass::DetermineCameraMode);
+		}
+	}
 
 	bPawnHasInitialized = true;
 }
@@ -181,4 +193,9 @@ void UPawnPlayerComponent::InputLook(const FInputActionValue& InputActionValue)
 	{
 		Pawn->AddControllerPitchInput(Value.Y);
 	}
+}
+
+TSubclassOf<UCameraModeBase> UPawnPlayerComponent::DetermineCameraMode() const
+{
+	return DefaultCameraMode;
 }

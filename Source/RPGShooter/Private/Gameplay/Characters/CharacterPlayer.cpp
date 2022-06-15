@@ -6,8 +6,11 @@
 #include "Player/PlayerControllerGameplay.h"
 #include "Player/PlayerStateGameplay.h"
 #include "Characters/Components/PawnPlayerComponent.h"
+#include "Camera/PlayerCameraComponent.h"
 
 FName const ACharacterPlayer::NAME_PawnPlayerComponent(TEXT("PawnPlayerComponent"));
+FName const ACharacterPlayer::NAME_PlayerCameraComponent(TEXT("CameraComponent"));
+
 
 ACharacterPlayer::ACharacterPlayer()
 {
@@ -18,6 +21,9 @@ ACharacterPlayer::ACharacterPlayer()
 
 	PawnPlayerComponent = CreateDefaultSubobject<UPawnPlayerComponent>(NAME_PawnPlayerComponent);
 
+	PlayerCameraComponent = CreateDefaultSubobject<UPlayerCameraComponent>(NAME_PlayerCameraComponent);
+	PlayerCameraComponent->SetupAttachment(GetRootComponent());
+	PlayerCameraComponent->SetRelativeLocation(FVector(-300.0f, 0.0f, 75.0f));
 }
 
 APlayerControllerGameplay* ACharacterPlayer::GetPlayerControllerGameplay() const

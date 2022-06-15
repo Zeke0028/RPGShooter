@@ -7,6 +7,7 @@
 #include "PawnPlayerComponent.generated.h"
 
 struct FInputActionValue;
+class UCameraModeBase;
 
 /**
  * 
@@ -22,7 +23,6 @@ public:
 	virtual bool IsPawnComponentReadyToInitialize() const override;
 
 protected:
-
 	virtual void OnRegister() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
@@ -33,7 +33,12 @@ protected:
 	void InputMove(const FInputActionValue& InputActionValue);
 	void InputLook(const FInputActionValue& InputActionValue);
 
+	TSubclassOf<UCameraModeBase> DetermineCameraMode() const;
+
 protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay|Camera")
+		TSubclassOf<UCameraModeBase> DefaultCameraMode;
+
 	bool bPawnHasInitialized;
 	bool bReadyToBindInputs;
 };
