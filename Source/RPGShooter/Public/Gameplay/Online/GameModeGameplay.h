@@ -14,4 +14,6 @@ class RPGSHOOTER_API AGameModeGameplay : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+	AGameModeGameplay();
 };

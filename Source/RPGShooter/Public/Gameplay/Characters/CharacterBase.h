@@ -4,26 +4,42 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AbilitySystemInterface.h"
 #include "CharacterBase.generated.h"
 
+class UAbilitySystemCharacterComponent;
+class UAbilitySystemComponent;
+class UPawnGameplayComponent;
+
 UCLASS()
-class RPGSHOOTER_API ACharacterBase : public ACharacter
+class RPGSHOOTER_API ACharacterBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	ACharacterBase();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	virtual void OnAbilitySystemInitialized();
+	virtual void OnAbilitySystemUninitialized();
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void UnPossessed() override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void OnRep_Controller() override;
+	virtual void OnRep_PlayerState() override;
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Gameplay|Character")
+		virtual UAbilitySystemCharacterComponent* GetAbilitySystemCharacterComponent() const;
+		virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gameplay|Character", Meta = (AllowPrivateAccess = "true"))
+		UPawnGameplayComponent* PawnGameplayComponent;
+
+protected:
+	static FName const NAME_PawnGameplayComponent;
 
 };
