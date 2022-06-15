@@ -6,6 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "GameModeGameplay.generated.h"
 
+class UPawnData;
+
 /**
  * 
  */
@@ -16,4 +18,13 @@ class RPGSHOOTER_API AGameModeGameplay : public AGameModeBase
 	
 public:
 	AGameModeGameplay();
+
+	UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
+	APawn* SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform) override;
+
+	const UPawnData* GetPawnDataForController(const AController* Controller) const;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = Gameplay)
+		UPawnData* DefaultPawnData;
 };

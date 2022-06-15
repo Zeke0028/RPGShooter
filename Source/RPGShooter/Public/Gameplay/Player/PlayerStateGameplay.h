@@ -9,6 +9,7 @@
 
 class UAbilitySystemCharacterComponent;
 class APlayerControllerGameplay;
+class UPawnData;
 
 UCLASS()
 class RPGSHOOTER_API APlayerStateGameplay : public APlayerState, public IAbilitySystemInterface
@@ -19,10 +20,16 @@ public:
 
 	APlayerStateGameplay();
 
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	virtual void PostInitializeComponents() override;
 	virtual void ClientInitialize(AController* Controller) override;
 
+	virtual void SetPawnData(const UPawnData* InPawnData);
+
 public:
+	template <class T>
+	const T* GetPawnData() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay|PlayerState")
 		APlayerControllerGameplay* GetPlayerControllerGameplay() const;
@@ -30,6 +37,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay|PlayerState")
 		UAbilitySystemCharacterComponent* GetAbilitySystemCharacterComponent() const;
 		virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+protected:
+	UPROPERTY(Replicated, EditDefaultsOnly, Category = Gameplay)
+		const UPawnData* PawnData;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Gameplay|PlayerState")
@@ -39,3 +50,9 @@ protected:
 
 	static FName const NAME_AbilitySystemCharacterComponent;
 };
+
+template <class T>
+const T* APlayerStateGameplay::GetPawnData() const
+{
+	return Cast<T>(PawnData);
+}

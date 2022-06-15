@@ -26,7 +26,7 @@ public:
 		APlayerStateGameplay* GetPlayerStateGameplay() const;
 
 private:
-	UPROPERTY(VisibleAnywhere, Category = "Gameplay|Character")
+	UPROPERTY(VisibleAnywhere, Transient, Category = "Gameplay|Character")
 		UPawnPlayerComponent* PawnPlayerComponent;
 
 protected:

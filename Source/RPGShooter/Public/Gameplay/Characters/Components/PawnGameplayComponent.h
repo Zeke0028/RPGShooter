@@ -7,6 +7,7 @@
 #include "PawnGameplayComponent.generated.h"
 
 class UAbilitySystemCharacterComponent;
+class UPawnData;
 
 /**
  * 
@@ -33,6 +34,9 @@ public:
 protected:
 	void OnRegister() override;
 
+	UFUNCTION()
+		void OnRep_PawnData();
+
 public:
 	UFUNCTION(BlueprintPure, Category = "Gameplay|Pawn")
 		static UPawnGameplayComponent* FindPawnGameplayComponent(const AActor* Actor) { return (Actor ? Actor->FindComponentByClass<UPawnGameplayComponent>() : nullptr); }
@@ -42,6 +46,14 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "Gameplay|Pawn", Meta = (ExpandBoolAsExecs = "ReturnValue"))
 		bool IsPawnReadyToInitialize() const { return bPawnReady; }
+
+	void SetPawnData(const UPawnData* InPawnData);
+
+	template <class T>
+	const T* GetPawnData() const
+	{
+		return Cast<T>(PawnData);
+	}
 
 public:
 	void OnPawnReadyToInitialize_RegisterAndCall(FSimpleMulticastDelegate::FDelegate Delegate);
@@ -56,6 +68,9 @@ protected:
 protected:
 	UPROPERTY()
 		UAbilitySystemCharacterComponent* AbilitySystemComponent;
+
+	UPROPERTY(EditInstanceOnly, ReplicatedUsing = OnRep_PawnData, Category = "Gameplay|Pawn")
+		const UPawnData* PawnData;
 
 	int32 bPawnReady : 1;
 };

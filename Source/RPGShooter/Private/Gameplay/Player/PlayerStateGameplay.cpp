@@ -5,6 +5,9 @@
 #include "GAS/AbilitySystemCharacterComponent.h"
 #include "Player/PlayerControllerGameplay.h"
 #include "Characters/Components/PawnGameplayComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "Data/PawnData.h"
+#include "Net/Core/PushModel/PushModel.h"
 
 FName const APlayerStateGameplay::NAME_AbilitySystemCharacterComponent(TEXT("AbilitySystemCharacterComponent"));
 
@@ -16,6 +19,16 @@ APlayerStateGameplay::APlayerStateGameplay()
 	AbilitySystemCharacterComponent->SetIsReplicated(true);
 	AbilitySystemCharacterComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
+}
+
+void APlayerStateGameplay::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	FDoRepLifetimeParams SharedParams;
+	SharedParams.bIsPushBased = true;
+
+	DOREPLIFETIME_WITH_PARAMS_FAST(ThisClass, PawnData, SharedParams);
 }
 
 void APlayerStateGameplay::PostInitializeComponents()
@@ -36,6 +49,18 @@ void APlayerStateGameplay::ClientInitialize(AController* Controller)
 	{
 		PawnGameplayComponent->UpdatePawnReady();
 	}
+}
+
+void APlayerStateGameplay::SetPawnData(const UPawnData* InPawnData)
+{
+	check(InPawnData);
+	if (GetLocalRole() != ROLE_Authority) return;
+	if (PawnData) return;
+
+	MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, PawnData, this);
+	PawnData = InPawnData;
+
+	ForceNetUpdate();
 }
 
 APlayerControllerGameplay* APlayerStateGameplay::GetPlayerControllerGameplay() const

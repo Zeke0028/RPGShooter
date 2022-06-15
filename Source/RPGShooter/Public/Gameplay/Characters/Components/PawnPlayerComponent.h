@@ -26,6 +26,8 @@ protected:
 
 	void OnPawnReadyToInitialize();
 
+	virtual void InitializePlayerInput(UInputComponent* PlayerInputComponent);
+
 protected:
 	bool bPawnHasInitialized;
 };

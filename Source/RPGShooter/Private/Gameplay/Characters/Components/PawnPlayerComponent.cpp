@@ -4,6 +4,8 @@
 #include "Gameplay/Characters/Components/PawnPlayerComponent.h"
 #include "Player/PlayerStateGameplay.h"
 #include "Characters/Components/PawnGameplayComponent.h"
+#include "DebugLogger.h"
+#include "Player/PlayerControllerGameplay.h"
 
 UPawnPlayerComponent::UPawnPlayerComponent()
 {
@@ -77,5 +79,53 @@ void UPawnPlayerComponent::OnPawnReadyToInitialize()
 		PawnGameplayComponent->InitializeAbilitySystem(PlayerState->GetAbilitySystemCharacterComponent(), PlayerState);
 	}
 
+	if (APlayerControllerGameplay* GameplayPC = GetController<APlayerControllerGameplay>())
+	{
+		if (Pawn->InputComponent)
+		{
+			InitializePlayerInput(Pawn->InputComponent);
+		}
+	}
+
+
 	bPawnHasInitialized = true;
+}
+
+void UPawnPlayerComponent::InitializePlayerInput(UInputComponent* PlayerInputComponent)
+{
+	check(PlayerInputComponent);
+
+	const APawn* Pawn = GetPawn<APawn>();
+	if (!Pawn) return;
+
+	const APlayerController* PlayerController = GetController<APlayerController>();
+	check(PlayerController);
+
+	const ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
+	check(LocalPlayer);
+
+	DEBUG_POINT();
+
+// 	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+// 	check(InputSubsystem);
+// 
+// 	InputSubsystem->ClearAllMappings();
+// 
+// 	const UGameplayPawnComponent* GameplayPawnComponent = UGameplayPawnComponent::FindGameplayPawnComponent(Pawn);
+// 	const UPawnData* PawnData = GameplayPawnComponent ? GameplayPawnComponent->GetPawnData<UPawnData>() : nullptr;
+// 	const UInputConfigData* InputConfig = PawnData ? PawnData->InputConfig : nullptr;
+// 
+// 	if (InputConfig)
+// 	{
+// 		UPlayerInputComponent* PlayerInputComponent = CastChecked<UPlayerInputComponent>(InputComponent);
+// 		InputSubsystem->AddMappingContext(InputConfig->InputMappingContext, 1);
+// 
+// 		PlayerInputComponent->BindTagAction(InputConfig, TAG_Input_Move, ETriggerEvent::Triggered, this, &ThisClass::InputMove);
+// 		PlayerInputComponent->BindTagAction(InputConfig, TAG_Input_Look, ETriggerEvent::Triggered, this, &ThisClass::InputLook);
+// 
+// 		TArray<uint32> BindHandles;
+// 		PlayerInputComponent->BindTagAbilityActions(InputConfig, this, &ThisClass::InputAbilityPressed, &ThisClass::InputAbilityReleased, BindHandles);
+// 	}
+// 
+// 	if (ensure(!bReadyToBindInputs)) { bReadyToBindInputs = true; }
 }

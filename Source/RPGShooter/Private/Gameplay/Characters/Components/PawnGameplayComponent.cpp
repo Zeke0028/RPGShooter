@@ -4,6 +4,8 @@
 #include "Gameplay/Characters/Components/PawnGameplayComponent.h"
 #include "GAS/AbilitySystemCharacterComponent.h"
 #include "LogChannels.h"
+#include "Net/UnrealNetwork.h"
+#include "Data/PawnData.h"
 
 UPawnGameplayComponent::UPawnGameplayComponent()
 {
@@ -19,6 +21,8 @@ UPawnGameplayComponent::UPawnGameplayComponent()
 void UPawnGameplayComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UPawnGameplayComponent, PawnData);
 }
 
 void UPawnGameplayComponent::InitializeAbilitySystem(UAbilitySystemCharacterComponent* InCharacterASC, AActor* InOwnerActor)
@@ -130,6 +134,28 @@ void UPawnGameplayComponent::OnRegister()
 	TArray<UActorComponent*> PawnGameplayComponents;
 	Pawn->GetComponents(UPawnGameplayComponent::StaticClass(), PawnGameplayComponents);
 	ensureAlwaysMsgf((PawnGameplayComponents.Num() == 1), TEXT("Only one PawnGameplayComponent should exist on [%s]."), *GetNameSafe(GetOwner()));
+}
+
+void UPawnGameplayComponent::OnRep_PawnData()
+{
+	UpdatePawnReady();
+}
+
+void UPawnGameplayComponent::SetPawnData(const UPawnData* InPawnData)
+{
+	check(InPawnData);
+	APawn* Pawn = GetPawnChecked<APawn>();
+
+	bPawnReady = false;
+
+	if (Pawn->GetLocalRole() != ROLE_Authority) return;
+	if (PawnData) return;
+
+	PawnData = InPawnData;
+
+	Pawn->ForceNetUpdate();
+
+	UpdatePawnReady();
 }
 
 void UPawnGameplayComponent::OnPawnReadyToInitialize_RegisterAndCall(FSimpleMulticastDelegate::FDelegate Delegate)

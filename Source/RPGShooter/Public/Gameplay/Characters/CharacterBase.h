@@ -36,7 +36,7 @@ public:
 		virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gameplay|Character", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "Gameplay|Character", Meta = (AllowPrivateAccess = "true"))
 		UPawnGameplayComponent* PawnGameplayComponent;
 
 protected:
