@@ -6,21 +6,22 @@
 #include "Engine/DataAsset.h"
 #include "PawnData.generated.h"
 
-/**
- * 
- */
+class UInputConfigData;
+
+
 UCLASS(BlueprintType, Const)
 class RPGSHOOTER_API UPawnData : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 
 public:
-
 	UPawnData();
 
 public:
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay|Pawn")
 		TSubclassOf<APawn> PawnClass;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay|Input")
+		UInputConfigData* InputConfig;
+
 };

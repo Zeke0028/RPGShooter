@@ -6,6 +6,8 @@
 #include "Gameplay/Characters/Components/PawnComponent.h"
 #include "PawnPlayerComponent.generated.h"
 
+struct FInputActionValue;
+
 /**
  * 
  */
@@ -26,8 +28,12 @@ protected:
 
 	void OnPawnReadyToInitialize();
 
-	virtual void InitializePlayerInput(UInputComponent* PlayerInputComponent);
+	virtual void InitializePlayerInput(UInputComponent* InputComponent);
+
+	void InputMove(const FInputActionValue& InputActionValue);
+	void InputLook(const FInputActionValue& InputActionValue);
 
 protected:
 	bool bPawnHasInitialized;
+	bool bReadyToBindInputs;
 };

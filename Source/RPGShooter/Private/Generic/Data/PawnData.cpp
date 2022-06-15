@@ -6,4 +6,5 @@
 UPawnData::UPawnData()
 {
 	PawnClass = nullptr;
+	InputConfig = nullptr;
 }
