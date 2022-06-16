@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Gameplay/Characters/Components/PawnComponent.h"
+#include "GameplayTagContainer.h"
 #include "PawnPlayerComponent.generated.h"
 
 struct FInputActionValue;
@@ -32,6 +33,9 @@ protected:
 
 	void InputMove(const FInputActionValue& InputActionValue);
 	void InputLook(const FInputActionValue& InputActionValue);
+
+	void InputAbilityPressed(FGameplayTag InputTag);
+	void InputAbilityReleased(FGameplayTag InputTag);
 
 	TSubclassOf<UCameraModeBase> DetermineCameraMode() const;
 

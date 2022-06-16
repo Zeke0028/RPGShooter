@@ -14,6 +14,7 @@
 #include "Input/PlayerInputComponent.h"
 #include "Camera/PlayerCameraComponent.h"
 #include "Camera/CameraMode/CameraModeThirdPerson.h"
+#include "GAS/AbilitySystemCharacterComponent.h"
 
 UE_DEFINE_GAMEPLAY_TAG(TAG_Input_Move, "InputTag.Move");
 UE_DEFINE_GAMEPLAY_TAG(TAG_Input_Look, "InputTag.Look");
@@ -145,6 +146,9 @@ void UPawnPlayerComponent::InitializePlayerInput(UInputComponent* InputComponent
 
 		PlayerInputComponent->BindTagAction(InputConfig, TAG_Input_Move, ETriggerEvent::Triggered, this, &ThisClass::InputMove);
 		PlayerInputComponent->BindTagAction(InputConfig, TAG_Input_Look, ETriggerEvent::Triggered, this, &ThisClass::InputLook);
+	
+		TArray<uint32> BindHandles;
+		PlayerInputComponent->BindTagAbilityActions(InputConfig, this, &ThisClass::InputAbilityPressed, &ThisClass::InputAbilityReleased, BindHandles);
 	}
 
 	if (ensure(!bReadyToBindInputs))
@@ -190,6 +194,30 @@ void UPawnPlayerComponent::InputLook(const FInputActionValue& InputActionValue)
 	if (Value.Y != 0.0f)
 	{
 		Pawn->AddControllerPitchInput(Value.Y);
+	}
+}
+
+void UPawnPlayerComponent::InputAbilityPressed(FGameplayTag InputTag)
+{
+	const APawn* Pawn = GetPawn<APawn>();
+	const UPawnGameplayComponent* PawnGameplayComponent = Pawn ? UPawnGameplayComponent::FindPawnGameplayComponent(Pawn) : nullptr;
+	UAbilitySystemCharacterComponent* CharacterASC = PawnGameplayComponent ? PawnGameplayComponent->GetAbilitySystemCharacterComponent() : nullptr;
+
+	if (CharacterASC)
+	{
+		CharacterASC->AbilityInputTagPressed(InputTag);
+	}
+}
+
+void UPawnPlayerComponent::InputAbilityReleased(FGameplayTag InputTag)
+{
+	const APawn* Pawn = GetPawn<APawn>();
+	const UPawnGameplayComponent* PawnGameplayComponent = Pawn ? UPawnGameplayComponent::FindPawnGameplayComponent(Pawn) : nullptr;
+	UAbilitySystemCharacterComponent* CharacterASC = PawnGameplayComponent ? PawnGameplayComponent->GetAbilitySystemCharacterComponent() : nullptr;
+
+	if (CharacterASC)
+	{
+		CharacterASC->AbilityInputTagReleased(InputTag);
 	}
 }
 

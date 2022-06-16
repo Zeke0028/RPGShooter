@@ -57,7 +57,7 @@ const UPawnData* AGameModeGameplay::GetPawnDataForController(const AController* 
 	if (Controller)
 	{
 		if (const APlayerStateGameplay* PlayerState = Controller->GetPlayerState<APlayerStateGameplay>())
-			if (const UPawnData* PawnData = PlayerState->GetPawnData<UPawnData>()) return PawnData;
+			if (const UPawnData* PawnData = PlayerState->PlayerPawnData) return PawnData;
 	}
 
 	if (DefaultPawnData) return DefaultPawnData;

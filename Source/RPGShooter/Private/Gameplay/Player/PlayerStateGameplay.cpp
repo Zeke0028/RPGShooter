@@ -8,12 +8,17 @@
 #include "Net/UnrealNetwork.h"
 #include "Data/PawnData.h"
 #include "Net/Core/PushModel/PushModel.h"
+#include "Data/AbilityConfigData.h"
+#include "DebugLogger.h"
+#include "Online/GameModeGameplay.h"
 
 FName const APlayerStateGameplay::NAME_AbilitySystemCharacterComponent(TEXT("AbilitySystemCharacterComponent"));
 
 APlayerStateGameplay::APlayerStateGameplay()
 {
 	NetUpdateFrequency = 100.0f;
+
+	PlayerPawnData = nullptr;
 
 	AbilitySystemCharacterComponent = CreateDefaultSubobject<UAbilitySystemCharacterComponent>(NAME_AbilitySystemCharacterComponent);
 	AbilitySystemCharacterComponent->SetIsReplicated(true);
@@ -39,6 +44,12 @@ void APlayerStateGameplay::PostInitializeComponents()
 
 	check(AbilitySystemCharacterComponent);
 	AbilitySystemCharacterComponent->InitAbilityActorInfo(this, GetPawn());
+
+	AGameModeGameplay* GameMode = GetWorld()->GetAuthGameMode<AGameModeGameplay>();
+	const UPawnData* NewPawnData = GameMode ? GameMode->GetPawnDataForController(GetOwningController()) : nullptr;
+	if (!NewPawnData) return;
+
+	SetPawnData(NewPawnData);
 }
 
 void APlayerStateGameplay::ClientInitialize(AController* Controller)
@@ -59,6 +70,13 @@ void APlayerStateGameplay::SetPawnData(const UPawnData* InPawnData)
 
 	MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, PawnData, this);
 	PawnData = InPawnData;
+
+	for (const UAbilityConfigData* AbilityConfig : PawnData->AbilityConfig)
+	{
+		if (!AbilityConfig) continue;
+
+		AbilityConfig->GiveToAbilitySystem(GetAbilitySystemCharacterComponent(), nullptr);
+	}
 
 	ForceNetUpdate();
 }

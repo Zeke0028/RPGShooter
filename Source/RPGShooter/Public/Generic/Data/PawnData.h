@@ -8,6 +8,7 @@
 
 class UInputConfigData;
 class UCameraModeBase;
+class UAbilityConfigData;
 
 
 UCLASS(BlueprintType, Const)
@@ -28,4 +29,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay|Input")
 		UInputConfigData* InputConfig;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay|Abilities")
+		TArray<UAbilityConfigData*> AbilityConfig;
 };

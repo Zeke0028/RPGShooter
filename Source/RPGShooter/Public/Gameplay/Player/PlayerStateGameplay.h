@@ -17,7 +17,6 @@ class RPGSHOOTER_API APlayerStateGameplay : public APlayerState, public IAbility
 	GENERATED_BODY()
 
 public:
-
 	APlayerStateGameplay();
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -38,8 +37,12 @@ public:
 		UAbilitySystemCharacterComponent* GetAbilitySystemCharacterComponent() const;
 		virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+public:
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = Gameplay)
+		UPawnData* PlayerPawnData;
+
 protected:
-	UPROPERTY(Replicated, EditDefaultsOnly, Category = Gameplay)
+	UPROPERTY(Replicated, BlueprintReadOnly, Transient, Category = Gameplay)
 		const UPawnData* PawnData;
 
 private:
