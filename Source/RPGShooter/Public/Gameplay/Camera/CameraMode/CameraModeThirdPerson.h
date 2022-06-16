@@ -8,10 +8,7 @@
 
 class UCurveVector;
 
-/**
- * 
- */
-UCLASS()
+UCLASS(Abstract, Blueprintable)
 class RPGSHOOTER_API UCameraModeThirdPerson : public UCameraModeBase
 {
 	GENERATED_BODY()

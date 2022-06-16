@@ -6,5 +6,6 @@
 UPawnData::UPawnData()
 {
 	PawnClass = nullptr;
+	DefaultCameraMode = nullptr;
 	InputConfig = nullptr;
 }

@@ -7,6 +7,7 @@
 #include "PawnData.generated.h"
 
 class UInputConfigData;
+class UCameraModeBase;
 
 
 UCLASS(BlueprintType, Const)
@@ -20,6 +21,9 @@ public:
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay|Pawn")
 		TSubclassOf<APawn> PawnClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay|Camera")
+		TSubclassOf<UCameraModeBase> DefaultCameraMode;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay|Input")
 		UInputConfigData* InputConfig;

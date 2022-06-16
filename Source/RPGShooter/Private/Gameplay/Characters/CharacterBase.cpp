@@ -17,7 +17,7 @@ ACharacterBase::ACharacterBase()
 	NetCullDistanceSquared = 900000000.0f;
 
 	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = false;
 
 	BaseEyeHeight = 80.0f;

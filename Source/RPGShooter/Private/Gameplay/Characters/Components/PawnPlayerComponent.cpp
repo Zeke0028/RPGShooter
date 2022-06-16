@@ -22,8 +22,6 @@ UPawnPlayerComponent::UPawnPlayerComponent()
 {
 	bPawnHasInitialized = false;
 	bReadyToBindInputs = false;
-
-	DefaultCameraMode = UCameraModeThirdPerson::StaticClass();
 }
 
 bool UPawnPlayerComponent::IsPawnComponentReadyToInitialize() const
@@ -197,5 +195,11 @@ void UPawnPlayerComponent::InputLook(const FInputActionValue& InputActionValue)
 
 TSubclassOf<UCameraModeBase> UPawnPlayerComponent::DetermineCameraMode() const
 {
-	return DefaultCameraMode;
+	const APawn* Pawn = GetPawn<APawn>();
+	if (!Pawn) return nullptr;
+
+	const UPawnGameplayComponent* PawnGameplayComponent = UPawnGameplayComponent::FindPawnGameplayComponent(Pawn);
+	const UPawnData* PawnData = PawnGameplayComponent ? PawnGameplayComponent->GetPawnData<UPawnData>() : nullptr;
+
+	return PawnData ? PawnData->DefaultCameraMode : nullptr;;
 }

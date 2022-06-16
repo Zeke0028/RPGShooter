@@ -36,8 +36,6 @@ protected:
 	TSubclassOf<UCameraModeBase> DetermineCameraMode() const;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "Gameplay|Camera")
-		TSubclassOf<UCameraModeBase> DefaultCameraMode;
 
 	bool bPawnHasInitialized;
 	bool bReadyToBindInputs;
